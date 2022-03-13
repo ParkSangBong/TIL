@@ -6,4 +6,6 @@
 
 - ### Algorithm
 
+- ### Javascript
+
 - ### Node.js - Express.js
