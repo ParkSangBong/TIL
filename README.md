@@ -6,6 +6,8 @@
 
 - ### Algorithm
 
-- ### Javascript
+- ### JavaScript
+
+- ### TypeScript
 
 - ### Node.js - Express.js
