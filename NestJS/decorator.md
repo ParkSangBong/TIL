@@ -380,3 +380,13 @@ t.setName('De');  //  L38: 파라미터 name의 길이가 3보다 작기 때문�
 | 접근자 데코레이터 | 접근자의 정의를 읽거나 수정 | (target, propertyKey, propertyDescriptor) | d.ts 파일, declare 클래스 |
 | 속성 데코레이터 | 속성의 정의를 읽음 | (target, propertyKey) | d.ts 파일, declare 클래스 |
 | 매개변수 데코레이터 | 매개변수의 정의를 읽음 | (target, propertyKey, parameterIndex) | d.ts 파일, declare 클래스 |
+
+## ※ - Caption
+
+- 타입스크립트 소스코드를 컴파일 할 때 생성되는 파일로 타입시스템의 타입추론을 돕는 코드가 포함되어 있다. 소스파일의 이름은 d.ts로 끝난다. ↩
+
+- Property Descriptor. 속성의 특성을 설명하는 객체 ↩
+
+- 객체 프로퍼티를 객체 외에서 읽고 쓸 수 있는 함수. 쉽게 이야기해서 게터(getter)와 세터(setter). 타입스크립트에는 게터와 세터를 구현할 수 있는 get, set 키워드가 있다. ↩
+
+- 하지만 데코레이터가 속성 디스크립터를 반환하면 실제로 잘 동작합니다. 이 부분은 타입스크립트의 동작 원리를 알아야 합니다. 이 이슈에 대한 논의를 참고하세요. ↩
