@@ -10,4 +10,10 @@
 
 - ### TypeScript
 
-- ### Node.js - Express.js
+- ### Node.js
+
+- ### Express.js
+
+- ### Sequelize
+
+- ### NestJS
