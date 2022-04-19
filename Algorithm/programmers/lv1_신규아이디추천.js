@@ -1,35 +1,25 @@
 function solution(new_id) {
     
-    let newString = new_id.toLowerCase()
-    console.log("6line : ", newString)
+    let resultStr = new_id.toLowerCase()
+    resultStr = resultStr.replace(/[^\w\-\.]/g, '')
+    resultStr = resultStr.replace(/\.+/g, '.')
+    resultStr = resultStr.replace(/^\.|\.$/g,'')
     
-    newString = newString.replace(/[^\w\.\-]/g, '')
-    console.log(newString)
-    
-    newString = newString.replace(/\.+/g, '.')
-    console.log(newString)
-    
-    newString = newString.replace(/^\.|\.$/g, '')
-    console.log(newString)
-    
-    if (newString.length === 0) {
-        newString += 'a'
-    }
-    console.log(newString)
-    
-    if (newString.length > 15) {
-        newString = newString.substring(0, 15)
-        if (newString[14] === '.') {
-            newString = newString.slice(0, -1)
+    if (resultStr.length === 0) {
+        resultStr = "a"
+    } 
+
+    if (resultStr.length > 15) {
+        resultStr = resultStr.slice(0, 15)
+        if (resultStr[resultStr.length - 1] === '.') {
+            resultStr = resultStr.slice(0, -1)
         }
     }
-    console.log(newString)
     
-    while (newString.length < 3) {
-        newString += newString[newString.length - 1]
+    while (resultStr.length < 3) {
+        resultStr = resultStr + resultStr[resultStr.length - 1]
     }
+
+    return resultStr
     
-    console.log(newString)
-    
-    return newString;
 }
