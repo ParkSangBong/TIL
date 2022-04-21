@@ -84,3 +84,55 @@ class TestClass {
 HELLO
 함수 호출됨
 ````
+
+
+
+# 데코레이터 합성
+
+### 만약 여러개의 데코레이터를 사용한다면 수학에서의 함수 합성과 같이 적용 된다. 다음 데코레이터 선언의 합성 결과는 f(g(x))와 같다.
+
+```typescript
+@f
+@g
+test
+```
+-> 솔직히 이 부분 아직 이해 안된다.
+
+> 여러 데코레이터를 사용할 때 다음과 같은 단계가 수행 된다.
+
+> 1. 각 데코레이터의 표현은 위에서 아래로 `평가(evaluate)` 됩니다.
+> 2. 그런 다음 결과는 아래에서 위로 함수로 `호출(call)` 됩니다.
+
+### 다음은 합성순서에 대한 이해를 도울 수 있는 예이다.
+
+```typescript
+function first() {
+  console.log("first(): factory evaluated");
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    console.log("first(): called");
+  };
+}
+
+function second() {
+  console.log("second(): factory evaluated");
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    console.log("second(): called");
+  };
+}
+
+class ExampleClass {
+  @first()
+  @second()
+  method() {
+    console.log('method is called');
+  }
+}
+```
+
+```console
+first(): factory evaluated
+second(): factory evaluated
+second(): called
+first(): called
+method is called
+```
