@@ -136,3 +136,43 @@ second(): called
 first(): called
 method is called
 ```
+
+# 타입스크립트가 지원하는 5가지 데코레이터를 알아보자
+
+## 1. 클래스 데코레이터 (Class Decorator)
+
+> 이름 그대로 클레스 데코레이터는 클래스 바로 앞에 선언된다. 클레스 데코레이터는 클래스의 생성자에 적용되어 클래스 정의를 읽거나 수정할 수 있다. 선언 파일과 선언 클래스 내에서는 사용할 수 없다.
+
+- 클래스에 reportingURL 속성을 추가하는 데코레이터의 예이다.
+
+```typescript
+function reportableClassDecorator<T extends { new (...args: any[]): {} }>(constructor: T) { //  L1: 클래스 데코레이터 팩토리입니다. 생성자 타입(new (...args: any[]): {}. new 키워드와 함께 어떠한 형식의 인자들도 받을 수 있는 타입)을 상속받는 제네릭 타입 T 를 가지는 생성자(constructor)를 팩토리 메서스의 인자로 전달하고 있습니다.
+
+  return class extends constructor {  //  L2: 클래스 데코레이터는 생성자를 리턴하는 함수여야 합니다.
+    reportingURL = "http://www.example.com";  //  L3: 클래스 데코레이터가 적용되는 클래스에 새로운 reportingURL이라는 새로운 속성을 추가합니다.
+  };
+}
+
+@reportableClassDecorator
+class BugReport {
+  type = "report";
+  title: string;
+
+  constructor(t: string) {
+    this.title = t;
+  }
+}
+
+const bug = new BugReport("Needs dark mode");
+console.log(bug);
+```
+
+- 위 코드의 출력결과는 다음과 같다.
+
+```typescript
+{type: 'report', title: 'Needs dark mode', reportingURL: 'http://www.example.com'}
+```
+
+### - 여기서 BugReport 클래스에 선언되지 않은 새로운 속성 reportURL이 추가 된 것을 확인할 수 있다.
+
+### ※ 클래스의 타입이 변경되는 것은 아니다. 타입 시스템은 reportingURL을 인식하지 못하기 때문에 `bug.reportingURL`과 같이 직접 사용할 수는 없다.
