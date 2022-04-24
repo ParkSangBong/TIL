@@ -235,3 +235,148 @@ class Greeter {
 const t = new Greeter();
 t.hello();
 ```
+
+## 3. 접근자 데코레이터 (Accessor Decorator)
+
+> ### 접근자 데코레이터는 접근자 바로 앞에 선언한다. 접근자의 속성 디스크립터에 적용되고 접근자의 정의를 읽거나 수정할 수 있다. 역시 선언 파일과 선언 클래스에 사용할 수 없다. 접근자 데코레이터가 반환하는 값은 해당 맴버의 속성 디스크립터가 된다.
+
+- 특정 맴버를 열거가 가능한 지 결정하는 데코레이터의 예를 살펴 보자.
+
+```typescript
+function Enumerable(enumerable: boolean) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    descriptor.enumerable = enumerable; //  L3: 디스크립터의 enumerable 속성을 데코레이터의 인자로 결정합니다.
+  }
+}
+
+class Person {
+  constructor(private name: string) {}  //  L8: name은 외부에서 접근하지 못하는 private 멤버입니다.
+
+  @Enumerable(true)
+  get getName() { //  L10~13: 게터 getName 함수는 열거가 가능하도록 합니다.
+
+    return this.name;
+  }
+
+  @Enumerable(false)
+  set setName(name: string) { //  L15~16: 세터 setName 함수는 열거가 불가능하도록 합니다.
+    this.name = name;
+  }
+}
+
+const person = new Person('Dexter');
+for (let key in person) { //  L21~24: 결과를 출력하면 getName은 출력되지만 setName은 열거하지 못하게 되었기 때문에 for문에서 key로 받을 수가 없습니다.
+  console.log(`${key}: ${person[key]}`);
+}
+```
+
+```
+name: Dexter
+getName: Dexter
+```
+
+## 4. 속성 데코레이터 (Property Decorators)
+
+> ### 속성 데코레이터는 클래스의 속성 바로 앞에 선언된다. 역시 선언 파일, 선언 클래스에서 사용하지 못한다. 속성 데코레이터는 다음 두 개의 인수를 가지는 함수이다.
+
+  1. 정적 멤버가 속한 클래스의 생성자 함수이거나 인스턴스 맴버에 대한 클래스의 프로토타입
+  2. 맴버의 이름
+
+- ### 메서드 데코레이터나 접근자 데코레이터와 비교했을 때 세 번째 인자인 속성 디스크립터가 존재하지 않는다. 공식문서에 따르면 반환값도 무시되고, 이는 현재 프로토타입(prototype)의 맴버를 정의할 때 인스턴스 속성을 설명하는 메커니즘이 없고 속성의 초기화 과정을 관찰하거나 수정할 수 있는 방법이 없기 때문이라고 한다.
+
+```typescript
+function format(formatString: string) {
+  return function (target: any, propertyKey: string): any {
+    let value = target[propertyKey];
+
+    function getter() {
+      return `${formatString} ${value}`;
+    } //  L6: 게터에서 데코레이터 인자로 들어온 formatString을 원래의 속성과 조합한 스트링으로 바꿉니다.
+
+    function setter(newVal: string) {
+      value = newVal;
+    }
+
+    return {
+      get: getter,
+      set: setter,
+      enumerable: true,
+      configurable: true,
+    }
+  }
+}
+
+class Greeter {
+  @format('Hello')  //  L23: 데코레이터에 formatString을 전달합니다.
+  greeting: string;
+}
+
+const t = new Greeter();
+t.greeting = 'World';
+console.log(t.greeting);  //  L29: 속성을 읽을 때 게터가 호출되면서 Hello World가 출력됩니다.
+```
+
+## 5. 매개변수 데코레이터 (Parameter Decorator)
+
+> ### 생성자 또는 메서드의 파라미터에 선언되어 적용된다. 선언 파일, 선언 클래스에서 사용할 수 없다. 매개변수 데코레이터는 호출 될 때 3가지의 인자와 함께 호출 된다. 반환값은 무시한다.
+
+  1. 정적 맴버가 속한 클래스의 생성자 함수이거나 인스턴스 맴버에 대한 클래스의 프로토타입
+  2. 맴버의 이름
+  3. 매개변수가 함수에서 몇 번째 위치에 선언되었는 지를 나타내는 인덱스
+
+- 파라미터 유효성 검사를 하는 데코레이터를 만들어 보겠다. 매개변수 데코레이터는 단독으로 사용하는 것보다 함수 데코레이터와 함께 사용할 때 유용하게 쓰인다.
+
+### ※ Nest에서 API 요청 파라미터에 대해 유효성 검사를 할 때 이와 유사한 데코레이터를 많이 사용한다. 참고하도록 하자!
+
+```typescript
+import { BadRequestException } from '@nestjs/common';
+
+function MinLength(min: number) { //  L3: 파라미터의 최소값을 검사하는 파라미터 데코레이터
+  return function (target: any, propertyKey: string, parameterIndex: number) {
+    target.validators = { //  L5~9: target 클래스(여기서는 User)의 validators 속성에 유효성을 검사하는 함수를 할당합니다.
+      minLength: function (args: string[]) {  //  L6: args 인자는 18번 라인에서 넘겨받은 메서드의 인자입니다.
+        return args[parameterIndex].length >= min;  //  L7: 유효성 검사를 위한 로직입니다. parameterIndex에 위치한 인자의 길이가 최소값보다 같거나 큰지 검사합니다.
+      }
+    }
+  }
+}
+
+function Validate(target: any, propertyKey: string, descriptor: PropertyDescriptor) { //  L13: 함께 사용할 메서드 데코레이터
+  const method = descriptor.value;  //  L14: 메서드 데코레이터가 선언된 메서드를 method 변수에 임시 저장해 둡니다.
+
+  descriptor.value = function(...args) {  //  L16: 디스크립터의 value에 유효성 검사 로직이 추가된 함수를 할당합니다.
+
+
+    Object.keys(target.validators).forEach(key => { //  L17~21: target(User 클래스)에 저장해 둔 validators를 모두 수행합니다. 이때 원래 메서드에 전달된 인자(args)들을 각 validator에 전달합니다.
+      if (!target.validators[key](args)) {
+        throw new BadRequestException();
+      }
+    })
+    method.apply(this, args); //  L22: 원래의 함수를 실행합니다.
+  }
+}
+
+class User {
+  private name: string;
+
+  @Validate
+  setName(@MinLength(3) name: string) {
+    this.name = name;
+  }
+}
+
+const t = new User();
+t.setName('Dexter');  //  L36: 파라미터 name의 길이가 5이기 때문에 문제가 없습니다.
+console.log('----------')
+t.setName('De');  //  L38: 파라미터 name의 길이가 3보다 작기 때문에 BadRequestException이 발생합니다.
+```
+
+# 지금까지 5가지 데코레이터를 자세히 알아보았다. 각 데코레이터의 특징을 간략히 정리하면 다음과 같다.
+
+| 데코레이터 | 역할 | 호출시 전달되는 인자 | 선언 불가능한 위치 |
+| --- | --- | --- | --- |
+| 클래스 데코레이터 | 클래스의 정의를 읽거나 수정 | (constructor) | d.ts 파일, declare 클래스 |
+| 메서드 데코레이터 | 메서드의 정의를 읽거나 수정 | (target, propertyKey, propertyDescriptor) | d.ts 파일, declare 클래스, 오버로드 메서드 |
+| 접근자 데코레이터 | 접근자의 정의를 읽거나 수정 | (target, propertyKey, propertyDescriptor) | d.ts 파일, declare 클래스 |
+| 속성 데코레이터 | 속성의 정의를 읽음 | (target, propertyKey) | d.ts 파일, declare 클래스 |
+| 매개변수 데코레이터 | 매개변수의 정의를 읽음 | (target, propertyKey, parameterIndex) | d.ts 파일, declare 클래스 |
