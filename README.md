@@ -14,6 +14,8 @@
 
 - ### TypeScript
 
+- ### React
+
 - ### Node.js
 
 - ### Express.js
