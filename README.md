@@ -23,3 +23,5 @@
 - ### Sequelize
 
 - ### NestJS
+
+- ### TypeORM
