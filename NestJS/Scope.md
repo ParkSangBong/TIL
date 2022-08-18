@@ -50,7 +50,7 @@ export class CatsService {}
 
 ---
 
-### @Controller() 데코레이터는 ControllerOptions을 인자로 받을 수 있다. ControllerOptions는 ScopOptions를 상속한다.
+### @Controller() 데코레이터는 ControllerOptions을 인자로 받을 수 있다. ControllerOptions는 ScopeOptions를 상속한다.
 
 ```typescript
 export declare function Controller(options: ControllerOptions): ClassDecorator;
