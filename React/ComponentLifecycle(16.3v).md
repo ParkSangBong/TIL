@@ -150,5 +150,9 @@ class App extends React.Component {
     return <WebServiceComponet />;
   }
 
+  componentDidCatch(error, info) {
+    this.setState({ hasError: true });
+  }
+
 }
 ```
