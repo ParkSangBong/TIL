@@ -1,4 +1,5 @@
-# ESM
+# ESM 
+> [Node.js docs - Modules: ECMAScript modules](https://nodejs.org/docs/latest/api/esm.html#esm_differences_between_es_modules_and_commonjs) 부분중
 
 #### ECMAScript modules은 Javascript 코드를 패키징하는 공식 표준 형식이다.
 #### module은 import 및 export 문을 사용하여 정의된다.
