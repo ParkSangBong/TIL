@@ -1,5 +1,5 @@
 # OpenSearch
 
-## [official site](https://opensearch.org/)
+## [Official Site](https://opensearch.org/)
 
 ### 1. Installation on debian
