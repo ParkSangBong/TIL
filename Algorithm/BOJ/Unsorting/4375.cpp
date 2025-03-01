@@ -14,7 +14,6 @@ int main() {
         while (true) {
             // cout << target << endl;
             if (target % n == 0) {
-                // cout << "cnt : " << cnt << endl;
                 break;
             } else {
                 cnt++;
