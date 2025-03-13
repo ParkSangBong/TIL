@@ -2,7 +2,7 @@
 
 ---
 
-- ### [Algorithm](https://github.com/ParkSangBong/TIL/tree/main/Algorithm)
+<!-- - ### [Algorithm](https://github.com/ParkSangBong/TIL/tree/main/Algorithm)
 
 - ### [Common](https://github.com/ParkSangBong/TIL/tree/main/Common)
 
@@ -22,4 +22,4 @@
 
 - ### [NestJS](https://github.com/ParkSangBong/TIL/tree/main/NestJS)
 
-- ### [TypeORM](https://github.com/ParkSangBong/TIL/tree/main/TypeORM)
+- ### [TypeORM](https://github.com/ParkSangBong/TIL/tree/main/TypeORM) -->
